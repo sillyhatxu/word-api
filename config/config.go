@@ -2,7 +2,7 @@ package config
 
 import (
 	"bytes"
-	"github.com/BurntSushi/toml"
+	//"github.com/BurntSushi/toml"
 	"io/ioutil"
 	"log"
 	"os"
@@ -44,7 +44,7 @@ func ParseConfig(configFile string) {
 	}
 	content = bytes.TrimSpace(content)
 
-	err = toml.Unmarshal(content, &Conf)
+	//err = toml.Unmarshal(content, &Conf)
 	if err != nil {
 		log.Panicf("unmarshal toml object error. %v", err)
 	}

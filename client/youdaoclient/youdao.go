@@ -2,7 +2,7 @@ package youdaoclient
 
 import (
 	"encoding/json"
-	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -11,7 +11,7 @@ const ERROR_CODE = -1
 
 type YouDao struct {
 	Translation []string `json:"translation"`
-	basic       Basic    `json:"basic"`
+	Basic       Basic    `json:"basic"`
 	Query       string   `json:"query"`
 	ErrorCode   int      `json:"errorCode"`
 	Web         []*Web   `json:"web"`
@@ -30,18 +30,26 @@ type Web struct {
 }
 
 func Translation(word string) YouDao {
-	client := &http.Client{Timeout: 10 * time.Second}
-	req, err := client.Get("http://fanyi.youdao.com/openapi.do?keyfrom=SillyHatYouDao&key=987724779&type=data&doctype=json&version=1.1&q=" + word)
+	timeout := time.Duration(30 * time.Second) //超时时间50ms
+	client := &http.Client{Timeout: timeout}
+	reqest, err := http.NewRequest("GET", "http://fanyi.youdao.com/openapi.do?keyfrom=SillyHatYouDao&key=987724779&type=data&doctype=json&version=1.1&q="+word, nil)
 	if err != nil {
-		fmt.Println(err)
 		return *&YouDao{ErrorCode: ERROR_CODE}
 	}
-	defer req.Body.Close()
-	decoder := json.NewDecoder(req.Body)
-	var youdao YouDao
-	err = decoder.Decode(&youdao)
+	//处理返回结果
+	response, err := client.Do(reqest)
 	if err != nil {
-		fmt.Println(err)
+		return *&YouDao{ErrorCode: ERROR_CODE}
+	}
+	defer response.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return *&YouDao{ErrorCode: ERROR_CODE}
+	}
+	defer response.Body.Close()
+	var youdao YouDao
+	jsonErr := json.Unmarshal([]byte(string(body)), &youdao)
+	if jsonErr != nil {
 		return *&YouDao{ErrorCode: ERROR_CODE}
 	}
 	return youdao

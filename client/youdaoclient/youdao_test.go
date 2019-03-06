@@ -6,7 +6,7 @@ import (
 )
 
 func TestAddSKUs(t *testing.T) {
-	youdao := Translation("sysptom")
+	youdao := Translation("tendency")
 	assert.NotNil(t, youdao)
 	assert.EqualValues(t, youdao.ErrorCode, 0)
 }
