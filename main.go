@@ -40,7 +40,7 @@ func main() {
 		for j := 0; j < len(words.Words); j++ {
 			word := words.Words[j]
 			log.Println("----- sleep -----")
-			time.Sleep(2 * time.Second)
+			time.Sleep(5 * time.Second)
 			log.Println("select word : " + word)
 			count, err := dao.Count(word)
 			if err != nil {
