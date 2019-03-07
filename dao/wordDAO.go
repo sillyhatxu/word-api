@@ -10,7 +10,7 @@ const (
 	insert_sql = `
 		INSERT INTO youdao_word 
 		(word, translation, phonetic, us_phonetic, uk_phonetic, explains, web, status, created_date, last_modified_date)
-		VALUES (?, ?, ?, ?, ?, ?, ?, 1, now(), now())
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())
 	`
 	update_sql = `
 		UPDATE youdao_word
@@ -30,7 +30,7 @@ const (
 )
 
 func InsertWord(word string) (int64, error) {
-	id, err := dbclient.Client.Insert(insert_sql, word, "", "", "", "", "", "")
+	id, err := dbclient.Client.Insert(insert_sql, word, "", "", "", "", "", "", 0)
 	if err != nil {
 		return 0, err
 	}
@@ -56,7 +56,7 @@ func InsertWordDetail(youdao youdaoclient.YouDao) (int64, error) {
 		youdao.Basic.PhoneticUS,
 		youdao.Basic.PhoneticUK,
 		explains,
-		web)
+		web, 1)
 	if err != nil {
 		return 0, err
 	}
